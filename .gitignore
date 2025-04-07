@@ -1,0 +1,6 @@
+*.mp4
+MP_Data
+Logs
+DATA_ARCHIVE
+*.h5
+*.npy
