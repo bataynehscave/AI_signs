@@ -8,7 +8,7 @@ import time
 # -------- CONFIGURATION --------
 actions = ['hello', 'thanks', 'iloveyou']
 sequence_length = 45  # Frames per sequence
-num_sequences = 3  # Videos per action
+num_sequences = 15  # Videos per action
 data_path = Path('MP_Data')
 start_folder = 1  # Start index for folder numbering
 fps = 30  # Target camera FPS
