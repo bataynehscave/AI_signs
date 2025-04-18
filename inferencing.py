@@ -4,22 +4,18 @@ import mediapipe as mp
 from collections import deque, Counter
 from tensorflow.keras.models import load_model
 import math
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 # Load trained model
-model = load_model('bilstm_gesture_model_final.h5')
+model = load_model('bilstm_heavy_gesture_model_final.h5')
 
 # Configuration
 SEQUENCE_LENGTH = 45
 actions = np.array([
-    'null', 'besm allah', 'alsalam alekom', 'alekom salam', 'aslan w shlan', 'me',
-    'age', 'alhamdulilah', 'bad', 'how are you', 'friend', 'good', 'happy',
-    'you', 'my name is', 'no', 'or', 'taaban', 'what', 'where', 'yes', 'look',
-    'said', 'walking', 'did not hear', 'remind me', 'eat', 'bayt', 'hospital',
-    'run', 'sleep', 'think', 'tomorrow', 'yesterday', 'today', 'when', 'dhuhr',
-    'sabah', 'university', 'kuliyah', 'night', 'a3ooth bellah', 'danger', 'enough',
-    'hot', 'mosque', 'surprise', 'tard', 'big', 'clean', 'dirty', 'fire',
-    'give me', 'sho dakhalak', 'small', 'help', 'same', 'hour', 'important',
-    'ok', 'please', 'want', 'riyadah', 'sallah', 'telephone', 'hamam', 'water', 'eid'
+    'null', 'besm_allah', 'salam_alykum', 'alykum_al_salam', 'ahlan_wa_sahlan', 'ana',
+    'anta', 'aw', 'ayn', 'al_hamdulillah', 'esmi', 'jayed', 'kef_halak',
+    'la', 'mabsot', 'matha', 'naam', 'omr', 'sadeq', 'saye2', 'taaban'
 ])
 
 # Landmark indices used during training

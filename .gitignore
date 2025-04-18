@@ -5,3 +5,6 @@ DATA_ARCHIVE
 *.h5
 *.npy
 grad
+*.zip
+DATA
+*cache*

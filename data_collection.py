@@ -6,11 +6,11 @@ import mediapipe as mp
 import time
 
 # -------- CONFIGURATION --------
-actions = ['hello', 'thanks', 'iloveyou']
+actions = ['ayn','matha', 'aw']
 sequence_length = 45  # Frames per sequence
 num_sequences = 15  # Videos per action
 data_path = Path('MP_Data')
-start_folder = 1  # Start index for folder numbering
+start_folder = 15  # Start index for folder numbering
 fps = 30  # Target camera FPS
 
 # -------- SETUP MEDIAPIPE --------
@@ -59,7 +59,8 @@ def collect_data():
                 print(f'\nCollecting for {action}, video {sequence}')
                 for frame_num in range(sequence_length):
                     ret, frame = cap.read()
-                    frame = cv2.resize(frame, (160, 160))
+                    frame = cv2.resize(frame, (160*2, 160*2))
+                    frame = cv2.flip(frame, 1)
                     if not ret:
                         print("Failed to read frame from camera.")
                         continue

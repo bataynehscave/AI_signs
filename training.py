@@ -10,20 +10,14 @@ from sklearn.model_selection import train_test_split
 # ==============================
 # Configuration
 # ==============================
-DATA_PATH = Path('MP_Data')
+DATA_PATH = Path('DATA')
 SEQUENCE_LENGTH = 45
 
 # List of actions
 actions = np.array([
-    'null', 'besm allah', 'alsalam alekom', 'alekom salam', 'aslan w shlan', 'me',
-    'age', 'alhamdulilah', 'bad', 'how are you', 'friend', 'good', 'happy',
-    'you', 'my name is', 'no', 'or', 'taaban', 'what', 'where', 'yes', 'look',
-    'said', 'walking', 'did not hear', 'remind me', 'eat', 'bayt', 'hospital',
-    'run', 'sleep', 'think', 'tomorrow', 'yesterday', 'today', 'when', 'dhuhr',
-    'sabah', 'university', 'kuliyah', 'night', 'a3ooth bellah', 'danger', 'enough',
-    'hot', 'mosque', 'surprise', 'tard', 'big', 'clean', 'dirty', 'fire',
-    'give me', 'sho dakhalak', 'small', 'help', 'same', 'hour', 'important',
-    'ok', 'please', 'want', 'riyadah', 'sallah', 'telephone', 'hamam', 'water', 'eid'
+    'null', 'besm_allah', 'salam_alykum', 'alykum_al_salam', 'ahlan_wa_sahlan', 'ana',
+    'anta', 'aw', 'ayn', 'al_hamdulillah', 'esmi', 'jayed', 'kef_halak',
+    'la', 'mabsot', 'matha', 'naam', 'omr', 'sadeq', 'saye2', 'taaban'
 ])
 label_map = {label: idx for idx, label in enumerate(actions)}
 
@@ -96,8 +90,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=
 log_dir = os.path.join('Logs')
 callbacks = [
     TensorBoard(log_dir=log_dir),
-    EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True),
-    ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=5, verbose=1),
+    EarlyStopping(monitor='val_loss', patience=300, restore_best_weights=True),
+    ReduceLROnPlateau(monitor='val_loss', factor=0.7, patience=25, verbose=1),
     ModelCheckpoint('best_bilstm_heavy_model.h5', monitor='val_loss', save_best_only=True)
 ]
 
@@ -107,17 +101,20 @@ callbacks = [
 from tensorflow.keras.layers import BatchNormalization
 
 model = Sequential([
-    Bidirectional(LSTM(128, return_sequences=True, activation='tanh'), input_shape=(SEQUENCE_LENGTH, frame_shape[0])),
+    LSTM(64, return_sequences=True, activation='tanh', input_shape=(SEQUENCE_LENGTH, frame_shape[0])),
     Dropout(0.3),
-    Bidirectional(LSTM(256, return_sequences=True, activation='tanh')),
-    Bidirectional(LSTM(128, return_sequences=True, activation='tanh')),
-    Bidirectional(LSTM(64, return_sequences=True, activation='tanh')),
-    Bidirectional(LSTM(32, return_sequences=False, activation='tanh')),
-    Dense(128, activation='tanh'),
+    LSTM(64, return_sequences=True, activation='tanh'),
+    LSTM(32, return_sequences=True, activation='tanh'),
     Dropout(0.4),
+    LSTM(32, return_sequences=True, activation='tanh'),
+    Dropout(0.4),
+    LSTM(32, return_sequences=True, activation='tanh'),
+    LSTM(16, return_sequences=False, activation='tanh'),
     Dense(64, activation='tanh'),
     Dropout(0.4),
     Dense(32, activation='tanh'),
+    Dropout(0.4),
+    Dense(16, activation='tanh'),
     Dense(actions.shape[0], activation='softmax')
 ])
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['categorical_accuracy'])
@@ -128,8 +125,8 @@ model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['categ
 history = model.fit(
     X_train, y_train,
     validation_data=(X_test, y_test),
-    epochs=100,
-    batch_size=8,
+    epochs=1200,
+    batch_size=32,
     callbacks=callbacks,
     verbose=1
 )
